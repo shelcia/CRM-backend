@@ -1,38 +1,82 @@
 const router = require("express").Router();
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 
-//VALIDATION OF USER INPUTS
+//VALIDATION OF USER INPUTS PREREQUISITES
 const Joi = require("@hapi/joi");
 
 const registerSchema = Joi.object({
-  name: Joi.string().min(6).required(),
+  name: Joi.string().min(4).required(),
+  email: Joi.string().min(6).required().email(),
+  password: Joi.string().min(6).required(),
+});
+
+const loginSchema = Joi.object({
   email: Joi.string().min(6).required().email(),
   password: Joi.string().min(6).required(),
 });
 
 //SIGNUP USER
 router.post("/register", async (req, res) => {
-  const user = new User({
-    name: req.body.name,
-    email: req.body.email,
-    password: req.body.password,
-  });
-  //checking if user'a mail already exists
+  //CHECKING IF USER EMAIL ALREADY EXISTS
   const emailExist = await User.findOne({ email: req.body.email });
   if (emailExist) res.status(400).send("Email already exists");
 
-  //New User is added
+  //HASHING THE PASSWORD
+
+  const salt = await bcrypt.genSalt(10);
+  const hashedPassword = await bcrypt.hash(req.body.password, salt);
+
+  //ON PROCESS OF ADDING NEW USER
+
+  const user = new User({
+    name: req.body.name,
+    email: req.body.email,
+    password: hashedPassword,
+  });
+
   try {
-    //validate the user inputs
+    //VALIDATION OF USER INPUTS
+
     const { error } = await registerSchema.validateAsync(req.body);
-    if (error) res.status(400).send(error.details[0].message);
+    if (error) return res.status(400).send(error.details[0].message);
     else {
+      //NEW USER IS ADDED
+
       const saveUser = await user.save();
-      res.send(saveUser);
+      res.send({ user: user._id });
     }
   } catch (error) {
     res.status(400).send(error);
   }
 });
 
+//SIGNIN USER
+
+router.post("/login", async (req, res) => {
+  //CHECKING IF USER EMAIL EXISTS
+
+  const user = await User.findOne({ email: req.body.email });
+  if (!user) return res.status(400).send("Incorrect Email- ID");
+
+  //CHECKING IF USER PASSWORD MATCHES
+
+  const validPassword = await bcrypt.compare(req.body.password, user.password);
+  if (!validPassword) return res.status(400).send("Incorrect Password");
+
+  try {
+    //VALIDATION OF USER INPUTS
+
+    const { error } = await loginSchema.validateAsync(req.body);
+    if (error) return res.status(400).send(error.details[0].message);
+    else {
+      //   res.send("success");
+      const token = jwt.sign({ _id: user._id }, process.env.TOKEN_SECRET);
+      res.header("auth-token", token).send(token);
+    }
+  } catch (error) {
+    res.status(400).send(error);
+  }
+});
 module.exports = router;
