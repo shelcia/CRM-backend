@@ -25,3 +25,5 @@ app.use("/api/users", authRoute);
 app.use("/api/posts", postRoute);
 
 app.listen(PORT, () => console.log("server up and running"));
+
+// "start": "nodemon index.js"
