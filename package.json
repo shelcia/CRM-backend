@@ -18,7 +18,8 @@
     "nodemon": "^2.0.4"
   },
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "dev": "nodemon index.js"
   },
   "author": "Shelcia",
   "license": "ISC"

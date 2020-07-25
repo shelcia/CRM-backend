@@ -2,6 +2,8 @@ const express = require("express");
 const app = express();
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
+const cors = require("cors");
+app.use(cors());
 const PORT = process.env.PORT || 3000;
 
 //IMPORT ROUTES
