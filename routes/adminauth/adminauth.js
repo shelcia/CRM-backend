@@ -1,7 +1,8 @@
 const router = require("express").Router();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const User = require("../models/User");
+const nodemailer = require("nodemailer");
+const User = require("../../models/User");
 
 //VALIDATION OF USER INPUTS PREREQUISITES
 const Joi = require("@hapi/joi");
@@ -11,7 +12,6 @@ const registerSchema = Joi.object({
   lname: Joi.string().min(3).required(),
   email: Joi.string().min(6).required().email(),
   password: Joi.string().min(6).required(),
-  type: Joi.string().min(2).required(),
 });
 
 const loginSchema = Joi.object({
@@ -37,7 +37,7 @@ router.post("/register", async (req, res) => {
     lname: req.body.lname,
     email: req.body.email,
     password: hashedPassword,
-    type: req.body.type,
+    type: "admin",
   });
 
   try {
@@ -77,11 +77,47 @@ router.post("/login", async (req, res) => {
     if (error) return res.status(400).send(error.details[0].message);
     else {
       //   res.send("success");
-      const token = jwt.sign({ _id: user._id }, process.env.TOKEN_SECRET);
-      res.header("auth-token", token).send(token);
+      if (user.type === "admin") {
+        const token = jwt.sign(
+          { _id: user._id },
+          process.env.ADMIN_TOKEN_SECRET
+        );
+        res.header("auth-token", token).send(token);
+      } else {
+        res.send({ message: "seems like you are not a admin" });
+      }
     }
   } catch (error) {
     res.status(400).send(error);
+  }
+});
+
+//FORGET PASSWORD
+
+router.post("/forgotpassword", async (req, res) => {
+  //CHECK IF EMAIL EXISTS IN DATABASE
+
+  const user = await User.findOne({ email: req.body.email });
+  if (!user) return res.status(400).send("Mail Id doesn't exist");
+
+  try {
+    const transporter = nodemailer.createTransport({
+      service: "Gmail",
+      auth: {
+        user: "shelcia@gmail.com",
+        pass: "ROSHN2014",
+      },
+    });
+
+    console.log("created");
+    await transporter.sendMail({
+      from: "shelcia@gmail.com",
+      to: req.body.email,
+      subject: "hello world!",
+      text: "hello world!",
+    });
+  } catch (error) {
+    console.log(error);
   }
 });
 module.exports = router;

@@ -6,12 +6,18 @@ const cors = require("cors");
 const PORT = process.env.PORT || 3000;
 
 //IMPORT ROUTES
-const authRoute = require("./routes/auth");
-const postRoute = require("./routes/post");
+
+const adminRoute = require("./routes/adminauth/adminauth");
+const managerRoute = require("./routes/managerauth/managerauth");
+const employeeRoute = require("./routes/employeeauth/employeeauth");
+const adminDashboardRoute = require("./routes/adminauth/adminDashboard");
+const managerDashboardRoute = require("./routes/managerauth/managerDashboard");
+const employeeDashboardRoute = require("./routes/employeeauth/employeeDashboard");
 
 dotenv.config();
 
 //CONNECTION TO DATABASE
+
 mongoose.connect(
   process.env.DB_CONNECT,
   { useNewUrlParser: true, useUnifiedTopology: true },
@@ -22,8 +28,13 @@ mongoose.connect(
 app.use(express.json(), cors());
 
 //ROUTE MIDDLEWARE
-app.use("/api/users", authRoute);
-app.use("/api/posts", postRoute);
+
+app.use("/api/admin", adminRoute);
+app.use("/api/manager", managerRoute);
+app.use("/api/employee", employeeRoute);
+app.use("/api/admindashboard", adminDashboardRoute);
+app.use("/api/managerdashboard", managerDashboardRoute);
+app.use("/api/employeedashboard", employeeDashboardRoute);
 
 app.listen(PORT, () => console.log(`server up and running at  ${PORT}`));
 

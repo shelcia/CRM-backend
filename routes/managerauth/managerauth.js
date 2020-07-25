@@ -1,7 +1,7 @@
 const router = require("express").Router();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const User = require("../models/User");
+const User = require("../../models/User");
 
 //VALIDATION OF USER INPUTS PREREQUISITES
 const Joi = require("@hapi/joi");
@@ -11,7 +11,6 @@ const registerSchema = Joi.object({
   lname: Joi.string().min(3).required(),
   email: Joi.string().min(6).required().email(),
   password: Joi.string().min(6).required(),
-  type: Joi.string().min(2).required(),
 });
 
 const loginSchema = Joi.object({
@@ -37,7 +36,7 @@ router.post("/register", async (req, res) => {
     lname: req.body.lname,
     email: req.body.email,
     password: hashedPassword,
-    type: req.body.type,
+    type: "manager",
   });
 
   try {
@@ -76,9 +75,16 @@ router.post("/login", async (req, res) => {
     const { error } = await loginSchema.validateAsync(req.body);
     if (error) return res.status(400).send(error.details[0].message);
     else {
-      //   res.send("success");
-      const token = jwt.sign({ _id: user._id }, process.env.TOKEN_SECRET);
-      res.header("auth-token", token).send(token);
+      console.log(user.type);
+      if (user.type === "manager") {
+        const token = jwt.sign(
+          { _id: user._id },
+          process.env.MANAGER_TOKEN_SECRET
+        );
+        res.header("auth-token", token).send(token);
+      } else {
+        res.send({ message: "seems like you are not a manager" });
+      }
     }
   } catch (error) {
     res.status(400).send(error);

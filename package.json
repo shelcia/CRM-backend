@@ -12,13 +12,14 @@
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
-    "mongoose": "^5.9.25"
+    "mongoose": "^5.9.25",
+    "nodemailer": "^6.4.10"
   },
   "devDependencies": {
     "nodemon": "^2.0.4"
   },
   "scripts": {
-    "start": "node index.js",
+    "start": "nodemon index.js",
     "dev": "nodemon index.js"
   },
   "author": "Shelcia",
