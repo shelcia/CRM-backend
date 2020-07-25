@@ -1,3 +1,7 @@
+//ADMIN DASHBOARD
+
+//ADMIN CAN EDIT,VIEW,DELETE AND ADD
+
 const router = require("express").Router();
 const verify = require("./adminverfiy");
 const ServiceRequest = require("../../models/ServiceRequest");
@@ -57,6 +61,32 @@ router.get("/servicerequest", verify, async (req, res) => {
     res.status(200).send(tickets);
   } catch (error) {
     console.log(error);
+    res.status(400).send(error);
+  }
+});
+
+//DELETE
+
+router.delete("/servicerequest", verify, async (req, res) => {
+  try {
+    const tickets = await ServiceRequest.deleteOne({ _id: req.body._id });
+    res.status(200).send("deleted suuccesfully");
+  } catch (error) {
+    console.log(error);
+    res.status(400).send(error);
+  }
+});
+
+//PUT
+
+router.put("/servicerequest/:id", async (req, res) => {
+  try {
+    const tickets = await ServiceRequest.findById(req.params.id).exec();
+    tickets.set(req.body);
+    const result = await tickets.save();
+    res.send(result);
+  } catch (error) {
+    res.status(500).send(error);
   }
 });
 
@@ -108,6 +138,31 @@ router.get("/lead", verify, async (req, res) => {
   }
 });
 
+//DELETE
+
+router.delete("/lead", verify, async (req, res) => {
+  try {
+    const leads = await Lead.deleteOne({ _id: req.body._id });
+    res.status(200).send("deleted suuccesfully");
+  } catch (error) {
+    console.log(error);
+    res.status(400).send(error);
+  }
+});
+
+//PUT
+
+router.put("/lead/:id", async (req, res) => {
+  try {
+    const leads = await Lead.findById(req.params.id).exec();
+    leads.set(req.body);
+    const result = await leads.save();
+    res.send(result);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+});
+
 //VALIDATION OF USER INPUTS PREREQUISITES
 
 const ContactSchema = Joi.object({
@@ -155,6 +210,31 @@ router.get("/contact", verify, async (req, res) => {
     res.status(200).send(contacts);
   } catch (error) {
     console.log(error);
+  }
+});
+
+//DELETE
+
+router.delete("/contact", verify, async (req, res) => {
+  try {
+    const contact = await Contact.deleteOne({ _id: req.body._id });
+    res.status(200).send("deleted suuccesfully");
+  } catch (error) {
+    console.log(error);
+    res.status(400).send(error);
+  }
+});
+
+//PUT
+
+router.put("/contact/:id", async (req, res) => {
+  try {
+    const contacts = await Contact.findById(req.params.id).exec();
+    contacts.set(req.body);
+    const result = await contacts.save();
+    res.send(result);
+  } catch (error) {
+    res.status(500).send(error);
   }
 });
 
