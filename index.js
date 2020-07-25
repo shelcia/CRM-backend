@@ -3,7 +3,6 @@ const app = express();
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 const cors = require("cors");
-app.use(cors());
 const PORT = process.env.PORT || 3000;
 
 //IMPORT ROUTES
@@ -20,12 +19,12 @@ mongoose.connect(
 );
 
 //MIDDLEWARE
-app.use(express.json());
+app.use(express.json(), cors());
 
 //ROUTE MIDDLEWARE
 app.use("/api/users", authRoute);
 app.use("/api/posts", postRoute);
 
-app.listen(PORT, () => console.log("server up and running"));
+app.listen(PORT, () => console.log(`server up and running at  ${PORT}`));
 
 // "start": "nodemon index.js"
