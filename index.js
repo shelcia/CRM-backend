@@ -36,6 +36,11 @@ app.use("/api/admindashboard", adminDashboardRoute);
 app.use("/api/managerdashboard", managerDashboardRoute);
 app.use("/api/employeedashboard", employeeDashboardRoute);
 
+app.get("/", (req, res) => {
+  res.send(
+    `<a href="https://github.com/shelcia/CRM-backend">This is a backend app , click to open code</a>`
+  );
+});
 app.listen(PORT, () => console.log(`server up and running at  ${PORT}`));
 
 // "start": "nodemon index.js"

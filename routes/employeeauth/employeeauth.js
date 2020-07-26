@@ -18,8 +18,11 @@ const loginSchema = Joi.object({
   password: Joi.string().min(6).required(),
 });
 
+//ADMIN TOKEN VERIFICATIOn
+const adminVerify = require("../adminauth/adminverfiy");
+
 //SIGNUP USER
-router.post("/register", async (req, res) => {
+router.post("/register", adminVerify, async (req, res) => {
   //CHECKING IF USER EMAIL ALREADY EXISTS
   const emailExist = await User.findOne({ email: req.body.email });
   if (emailExist) res.status(400).send("Email already exists");

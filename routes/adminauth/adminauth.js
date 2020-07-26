@@ -3,6 +3,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
 const User = require("../../models/User");
+const verify = require("./adminverfiy");
 
 //VALIDATION OF USER INPUTS PREREQUISITES
 const Joi = require("@hapi/joi");
@@ -20,7 +21,7 @@ const loginSchema = Joi.object({
 });
 
 //SIGNUP USER
-router.post("/register", async (req, res) => {
+router.post("/register", verify, async (req, res) => {
   //CHECKING IF USER EMAIL ALREADY EXISTS
   const emailExist = await User.findOne({ email: req.body.email });
   if (emailExist) res.status(400).send("Email already exists");
@@ -120,4 +121,17 @@ router.post("/forgotpassword", async (req, res) => {
     console.log(error);
   }
 });
+
+//DELETE USER
+
+router.delete("/deleteuser", verify, async (req, res) => {
+  try {
+    const users = await User.deleteOne({ email: req.body.email });
+    res.status(200).send("deleted suuccesfully");
+  } catch (error) {
+    console.log(error);
+    res.status(400).send(error);
+  }
+});
+
 module.exports = router;
