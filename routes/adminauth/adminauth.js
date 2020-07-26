@@ -93,35 +93,6 @@ router.post("/login", async (req, res) => {
   }
 });
 
-//FORGET PASSWORD
-
-router.post("/forgotpassword", async (req, res) => {
-  //CHECK IF EMAIL EXISTS IN DATABASE
-
-  const user = await User.findOne({ email: req.body.email });
-  if (!user) return res.status(400).send("Mail Id doesn't exist");
-
-  try {
-    const transporter = nodemailer.createTransport({
-      service: "Gmail",
-      auth: {
-        user: "shelcia@gmail.com",
-        pass: "ROSHN2014",
-      },
-    });
-
-    console.log("created");
-    await transporter.sendMail({
-      from: "shelcia@gmail.com",
-      to: req.body.email,
-      subject: "hello world!",
-      text: "hello world!",
-    });
-  } catch (error) {
-    console.log(error);
-  }
-});
-
 //DELETE USER
 
 router.delete("/deleteuser", verify, async (req, res) => {
