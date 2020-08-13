@@ -7,6 +7,7 @@ const verify = require("./adminverfiy");
 const ServiceRequest = require("../../models/ServiceRequest");
 const Lead = require("../../models/Lead");
 const Contact = require("../../models/Contact");
+const User = require("../../models/User");
 
 //VALIDATION OF USER INPUTS PREREQUISITES
 const Joi = require("@hapi/joi");
@@ -218,7 +219,7 @@ router.get("/contact", verify, async (req, res) => {
 router.delete("/contact", verify, async (req, res) => {
   try {
     const contact = await Contact.deleteOne({ _id: req.body._id });
-    res.status(200).send("deleted suuccesfully");
+    res.status(200).send("deleted succesfully");
   } catch (error) {
     console.log(error);
     res.status(400).send(error);
@@ -235,6 +236,17 @@ router.put("/contact/:id", async (req, res) => {
     res.send(result);
   } catch (error) {
     res.status(500).send(error);
+  }
+});
+
+//USERS
+router.get("/users", verify, async (req, res) => {
+  try {
+    const users = await User.find().exec();
+    res.status(200).send(users);
+  } catch (error) {
+    console.log(error);
+    res.status(400).send(error);
   }
 });
 
