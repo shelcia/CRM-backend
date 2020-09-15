@@ -85,7 +85,7 @@ router.post("/login", async (req, res) => {
           { _id: user._id },
           process.env.MANAGER_TOKEN_SECRET
         );
-        res.header("auth-token", token).send(token);
+        res.status(200).header("auth-token", token).send(token);
       } else {
         res.status(200).json({ message: "seems like you are not a manager" });
       }
