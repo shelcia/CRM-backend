@@ -69,13 +69,15 @@ router.post("/login", async (req, res) => {
   //CHECKING IF USER PASSWORD MATCHES
 
   const validPassword = await bcrypt.compare(req.body.password, user.password);
-  if (!validPassword) return res.status(400).send("Incorrect Password");
+  if (!validPassword)
+    return res.status(400).send({ message: "Incorrect Password" });
 
   try {
     //VALIDATION OF USER INPUTS
 
     const { error } = await loginSchema.validateAsync(req.body);
-    if (error) return res.status(400).send(error.details[0].message);
+    if (error)
+      return res.status(400).send({ message: error.details[0].message });
     else {
       //   res.send("success");
       if (user.type === "admin") {
@@ -83,9 +85,9 @@ router.post("/login", async (req, res) => {
           { _id: user._id },
           process.env.ADMIN_TOKEN_SECRET
         );
-        res.header("auth-token", token).send(token);
+        res.status(200).header("auth-token", token).send(token);
       } else {
-        res.send({ message: "seems like you are not a admin" });
+        res.status(400).send({ message: "Seems like you are not a admin" });
       }
     }
   } catch (error) {
