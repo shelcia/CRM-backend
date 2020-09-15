@@ -66,7 +66,7 @@ router.post("/login", async (req, res) => {
   //CHECKING IF USER EMAIL EXISTS
 
   const user = await User.findOne({ email: req.body.email });
-  if (!user) return res.status(400).send("Incorrect Email- ID");
+  if (!user) return res.status(400).json("Incorrect Email- ID");
 
   //CHECKING IF USER PASSWORD MATCHES
 
