@@ -87,7 +87,7 @@ router.post("/login", async (req, res) => {
         );
         res.header("auth-token", token).send(token);
       } else {
-        res.send({ message: "seems like you are not a manager" });
+        res.status(200).json({ message: "seems like you are not a manager" });
       }
     }
   } catch (error) {

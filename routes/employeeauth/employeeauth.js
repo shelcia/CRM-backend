@@ -86,7 +86,7 @@ router.post("/login", async (req, res) => {
         );
         res.header("auth-token", token).send(token);
       } else {
-        res.status(401).json({ message: "seems like you are not a employee" });
+        res.status(200).json({ message: "seems like you are not a employee" });
       }
     }
   } catch (error) {
