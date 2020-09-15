@@ -87,7 +87,7 @@ router.post("/login", async (req, res) => {
         );
         res.status(200).header("auth-token", token).send(token);
       } else {
-        res.status(400).send({ message: "Seems like you are not a admin" });
+        res.status(400).json({ message: "Seems like you are not a admin" });
       }
     }
   } catch (error) {
