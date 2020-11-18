@@ -18,7 +18,7 @@ Backend Link : https://github.com/shelcia/CRM-backend
 
 email : admin@gmail.com
 
-password: adminuser
+password: shelcia
 
 
 ### For Manager Signin
