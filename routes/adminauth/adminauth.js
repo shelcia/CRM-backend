@@ -6,11 +6,11 @@ const User = require("../../models/User");
 const verify = require("./adminverfiy");
 
 //VALIDATION OF USER INPUTS PREREQUISITES
-const Joi = require("@hapi/joi");
+const Joi = require("joi");
 
 const registerSchema = Joi.object({
   fname: Joi.string().min(3).required(),
-  lname: Joi.string().min(3).required(),
+  lname: Joi.string().min(3),
   email: Joi.string().min(6).required().email(),
   password: Joi.string().min(6).required(),
 });

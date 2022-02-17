@@ -7,6 +7,7 @@ const PORT = process.env.PORT || 4050;
 
 //IMPORT ROUTES
 
+const authRoute = require("./routes/auth/auth");
 const adminRoute = require("./routes/adminauth/adminauth");
 const managerRoute = require("./routes/managerauth/managerauth");
 const employeeRoute = require("./routes/employeeauth/employeeauth");
@@ -21,7 +22,7 @@ dotenv.config();
 mongoose.connect(
   process.env.DB_CONNECT,
   { useNewUrlParser: true, useUnifiedTopology: true },
-  () => console.log("connected to db  ")
+  () => console.log("Connected to Database")
 );
 
 //MIDDLEWARE
@@ -29,6 +30,7 @@ app.use(express.json(), cors());
 
 //ROUTE MIDDLEWARE
 
+app.use("/api/auth", authRoute);
 app.use("/api/admin", adminRoute);
 app.use("/api/manager", managerRoute);
 app.use("/api/employee", employeeRoute);

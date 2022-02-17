@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 const User = require("../../models/User");
 
 //VALIDATION OF USER INPUTS PREREQUISITES
-const Joi = require("@hapi/joi");
+const Joi = require("joi");
 
 const registerSchema = Joi.object({
   fname: Joi.string().min(3).required(),

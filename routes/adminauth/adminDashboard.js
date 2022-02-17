@@ -10,7 +10,7 @@ const Contact = require("../../models/Contact");
 const User = require("../../models/User");
 
 //VALIDATION OF USER INPUTS PREREQUISITES
-const Joi = require("@hapi/joi");
+const Joi = require("joi");
 
 const serviceRequestSchema = Joi.object({
   title: Joi.string().min(3).required(),
