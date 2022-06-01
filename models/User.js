@@ -28,6 +28,9 @@ const userSchema = new mongoose.Schema({
     max: 10,
     min: 2,
   },
+  permissions: {
+    type: Array,
+  },
   date: {
     type: Date,
     default: Date.now(),

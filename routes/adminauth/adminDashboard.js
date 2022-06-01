@@ -5,7 +5,7 @@
 const router = require("express").Router();
 const verify = require("./adminverfiy");
 const ServiceRequest = require("../../models/ServiceRequest");
-const Lead = require("../../models/Lead");
+const Lead = require("../../models/Contacts");
 const Contact = require("../../models/Contact");
 const User = require("../../models/User");
 
