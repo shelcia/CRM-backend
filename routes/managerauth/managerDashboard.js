@@ -5,8 +5,8 @@
 const router = require("express").Router();
 const verify = require("./managerverify");
 const ServiceRequest = require("../../models/ServiceRequest");
-const Lead = require("../../models/Lead");
-const Contact = require("../../models/Contact");
+const Lead = require("../../models/Contacts");
+const Contact = require("../../models/Contacts");
 
 //VALIDATION OF USER INPUTS PREREQUISITES
 const Joi = require("joi");
