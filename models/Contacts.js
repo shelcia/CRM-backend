@@ -1,20 +1,15 @@
 const mongoose = require("mongoose");
 
 const contactSchema = new mongoose.Schema({
-  fName: {
+  name: {
     type: String,
     required: true,
-    max: 255,
   },
-  lName: {
+  mail: {
     type: String,
-    max: 255,
+    max: 512,
   },
   number: {
-    type: String,
-    max: 255,
-  },
-  cmail: {
     type: String,
     max: 255,
   },
@@ -43,6 +38,9 @@ const contactSchema = new mongoose.Schema({
     type: String,
     required: true,
     max: 255,
+  },
+  lastActivity: {
+    type: Date,
   },
   date: {
     type: Date,
