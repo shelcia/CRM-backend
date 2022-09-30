@@ -8,24 +8,24 @@ const Joi = require("joi");
 
 const registerSchema = Joi.object({
   name: Joi.string().min(2).required(),
-  userId: Joi.string().min(3).required(),
+  email: Joi.email().required(),
   password: Joi.string().min(6).required(),
-  type: Joi.string().min(3).required(),
+  type: Joi.string().min(2).required(),
 });
 
 const loginSchema = Joi.object({
-  userId: Joi.string().min(3).required(),
+  email: Joi.email().required(),
   password: Joi.string().min(6).required(),
 });
 
 //SIGNUP USER
 router.post("/register", async (req, res) => {
   //CHECKING IF USERID ALREADY EXISTS
-  const userIdExist = await User.findOne({ userId: req.body.userId });
-  if (userIdExist) {
+  const emailExist = await User.findOne({ email: req.body.email });
+  if (emailExist) {
     res.status(200).send({
       status: "400",
-      message: "User ID/ admission ID already exists",
+      message: "Email Id already exists",
     });
     return;
   }
@@ -37,19 +37,9 @@ router.post("/register", async (req, res) => {
 
   //ASSIGN TOKEN
   const token = jwt.sign(
-    { userId: req.body.userId, type: req.body.type },
+    { email: req.body.email, type: req.body.type },
     process.env.TOKEN_SECRET
   );
-
-  //ON PROCESS OF ADDING NEW USER
-
-  const user = new User({
-    name: req.body.name,
-    userId: req.body.userId,
-    password: hashedPassword,
-    type: req.body.type,
-    token: token,
-  });
 
   try {
     //VALIDATION OF USER INPUTS
@@ -58,9 +48,24 @@ router.post("/register", async (req, res) => {
     if (error)
       return res.status(400).send({ message: error.details[0].message });
     else {
+      //ON PROCESS OF ADDING NEW USER
+      const user = new User({
+        ...req.body,
+        token: token,
+      });
+
       //NEW USER IS ADDED
       const saveUser = await user.save();
-      res.status(200).send({ status: "200", message: "user created" });
+      res.status(200).send({
+        status: "200",
+        message: {
+          id: user._id,
+          name: user.name,
+          email: user.email,
+          type: user.type,
+          token: token,
+        },
+      });
     }
   } catch (error) {
     res.status(200).send({ status: "500", message: error });

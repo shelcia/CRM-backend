@@ -1,14 +1,10 @@
 const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema({
-  fname: {
+  name: {
     type: String,
     required: true,
     min: 1,
-    max: 255,
-  },
-  lname: {
-    type: String,
     max: 255,
   },
   email: {
@@ -25,7 +21,7 @@ const userSchema = new mongoose.Schema({
   type: {
     type: String,
     required: true,
-    max: 10,
+    max: 20,
     min: 2,
   },
   permissions: {
