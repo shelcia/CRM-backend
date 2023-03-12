@@ -18,7 +18,7 @@ const userSchema = new mongoose.Schema({
     max: 1024,
     min: 6,
   },
-  type: {
+  role: {
     type: String,
     required: true,
     max: 20,
@@ -27,9 +27,16 @@ const userSchema = new mongoose.Schema({
   permissions: {
     type: Array,
   },
+  verified: {
+    default: false,
+    type: Boolean,
+  },
   date: {
     type: Date,
     default: Date.now(),
+  },
+  company: {
+    type: String,
   },
 });
 

@@ -3,6 +3,7 @@ const app = express();
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const rateLimit = require("express-rate-limit");
 const PORT = process.env.PORT || 4050;
 
 //IMPORT ROUTES
@@ -19,14 +20,23 @@ dotenv.config();
 
 //CONNECTION TO DATABASE
 
-mongoose.connect(
-  process.env.DB_CONNECT,
-  { useNewUrlParser: true, useUnifiedTopology: true },
-  () => console.log("Connected to Database")
-);
+mongoose.connect(process.env.DB_CONNECT, () => console.log("connected to db"));
+
+// mongoose.connect(
+//   process.env.DB_CONNECT,
+//   { useNewUrlParser: true, useUnifiedTopology: true },
+//   () => console.log("Connected to Database")
+// );
 
 //MIDDLEWARE
-app.use(express.json(), cors());
+app.use(cors());
+app.use(
+  rateLimit({
+    windowMs: 1 * 60 * 1000, // 120 request per 1 minute
+    max: 160,
+  })
+);
+app.use(express.json());
 
 //ROUTE MIDDLEWARE
 
