@@ -43,10 +43,15 @@ router.post("/register", async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(req.body.password, salt);
 
+    let permissions = [];
+    if (req.body.role === "admin") {
+      permissions = [...permissions, "all"];
+    }
+
     // CREATE TOKEN
     const token = jwt.sign(
-      { email: req.body.email, type: req.body.type },
-      process.env.ADMIN_TOKEN_SECRET
+      { email: req.body.email, type: req.body.type, permissions: permissions },
+      process.env.TOKEN_SECRET
     );
     //VALIDATION OF USER INPUTS
     const { error } = await registerSchema.validateAsync(req.body);
@@ -54,10 +59,6 @@ router.post("/register", async (req, res) => {
       res.status(200).send({ message: error });
       return;
     } else {
-      let permissions = [];
-      if (req.body.role === "admin") {
-        permissions = [...permissions, "all"];
-      }
       //ON PROCESS OF ADDING NEW USER
       const user = new User({
         ...req.body,
@@ -100,14 +101,7 @@ router.post("/register", async (req, res) => {
           // needs to be changed
           res.status(200).send({
             status: "200",
-            message: {
-              id: user._id,
-              name: user.name,
-              email: user.email,
-              role: user.role,
-              token: token,
-              permissions: user.permissions,
-            },
+            message: "User Created Successfully",
           });
         }
       });
@@ -118,23 +112,33 @@ router.post("/register", async (req, res) => {
 });
 
 router.post("/login", async (req, res) => {
-  //CHECKING IF USER EMAIL EXISTS
-
-  const user = await User.findOne({ userId: req.body.userId });
-  if (!user) {
-    res.status(200).send({ status: "400", message: "Incorrect Email" });
-    return;
-  }
-
-  //CHECKING IF USER PASSWORD MATCHES
-
-  const validPassword = await bcrypt.compare(req.body.password, user.password);
-  if (!validPassword) {
-    res.status(200).send({ status: "400", message: "Incorrect Password" });
-    return;
-  }
-
   try {
+    //CHECKING IF USER EMAIL EXISTS
+
+    const user = await User.findOne({ userId: req.body.userId });
+    if (!user) {
+      res.status(200).send({ status: "400", message: "Incorrect Email" });
+      return;
+    }
+
+    //CHECKING IF USER PASSWORD MATCHES
+
+    const validPassword = await bcrypt.compare(
+      req.body.password,
+      user.password
+    );
+    if (!validPassword) {
+      res.status(200).send({ status: "400", message: "Incorrect Password" });
+      return;
+    }
+
+    if (!user.verified) {
+      res
+        .status(200)
+        .send({ status: "400", message: "User not Verified yet !" });
+      return;
+    }
+
     //VALIDATION OF USER INPUTS
 
     const { error } = await loginSchema.validateAsync(req.body);
@@ -149,7 +153,14 @@ router.post("/login", async (req, res) => {
         .header("auth-token", user.token)
         .send({
           status: "200",
-          message: { token: user.token, type: user.type },
+          message: {
+            id: user._id,
+            name: user.name,
+            email: user.email,
+            role: user.role,
+            token: user.token,
+            permissions: user.permissions,
+          },
         });
     }
   } catch (error) {

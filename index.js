@@ -9,6 +9,7 @@ const PORT = process.env.PORT || 4050;
 //IMPORT ROUTES
 
 const authRoute = require("./routes/auth/auth");
+const contactsRoute = require("./routes/contacts/contacts");
 const adminRoute = require("./routes/adminauth/adminauth");
 const managerRoute = require("./routes/managerauth/managerauth");
 const employeeRoute = require("./routes/employeeauth/employeeauth");
@@ -41,6 +42,7 @@ app.use(express.json());
 //ROUTE MIDDLEWARE
 
 app.use("/api/auth", authRoute);
+app.use("/api/contacts", contactsRoute);
 app.use("/api/admin", adminRoute);
 app.use("/api/manager", managerRoute);
 app.use("/api/employee", employeeRoute);

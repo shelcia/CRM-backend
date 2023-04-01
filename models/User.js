@@ -21,8 +21,12 @@ const userSchema = new mongoose.Schema({
   role: {
     type: String,
     required: true,
-    max: 20,
+    max: 30,
     min: 2,
+  },
+  token: {
+    type: String,
+    required: true,
   },
   permissions: {
     type: Array,
