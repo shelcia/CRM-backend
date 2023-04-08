@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 //ADMIN DASHBOARD
 
 //ADMIN CAN EDIT,VIEW,DELETE AND ADD

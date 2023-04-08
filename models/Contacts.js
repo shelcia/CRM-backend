@@ -7,11 +7,9 @@ const contactSchema = new mongoose.Schema({
   },
   mail: {
     type: String,
-    max: 512,
   },
   number: {
     type: String,
-    max: 255,
   },
   company: {
     type: String,

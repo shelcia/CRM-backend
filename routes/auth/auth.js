@@ -115,9 +115,11 @@ router.post("/login", async (req, res) => {
   try {
     //CHECKING IF USER EMAIL EXISTS
 
-    const user = await User.findOne({ userId: req.body.userId });
+    const user = await User.findOne({ email: req.body.email });
     if (!user) {
-      res.status(200).send({ status: "400", message: "Incorrect Email" });
+      res
+        .status(200)
+        .send({ status: "400", message: "Email doesn't seem to exist" });
       return;
     }
 
@@ -135,7 +137,7 @@ router.post("/login", async (req, res) => {
     if (!user.verified) {
       res
         .status(200)
-        .send({ status: "400", message: "User not Verified yet !" });
+        .send({ status: "401", message: "User not Verified yet !" });
       return;
     }
 
@@ -195,7 +197,7 @@ router.post("/resend", async (req, res) => {
       //GENERATE TOKEN
       const encryptedString = cryptr.encrypt(req.body.email);
 
-      const link = `${feLink}verification/${encryptedString}`;
+      const link = `${feLink}email-verification/${encryptedString}`;
       // console.log(process.env.EMAIL, process.env.PASSWORD);
 
       const transporter = await nodemailer.createTransport({
