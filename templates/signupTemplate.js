@@ -1,6 +1,6 @@
 const feLink = require("../link");
 
-const verificationEmailTemplate = (link) =>
+const resetPwdTemplate = (link, email, password) =>
   `<!doctype html>
   <html lang="en-US">
   
@@ -10,7 +10,7 @@ const verificationEmailTemplate = (link) =>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
   
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
-    <title>Verify Email</title>
+    <title>Easy CRM Signup</title>
     <style type="text/css">
       a:hover {
         text-decoration: underline !important;
@@ -46,34 +46,38 @@ const verificationEmailTemplate = (link) =>
                   </tr>
                   <tr>
                     <td style="padding:0 35px;">
-                      <h1 style="color:#2499EF; font-weight:500; margin:0;font-size:32px;font-family:'Poppins',sans-serif; text-align:center;"> Verify your email
+                      <h1 style="color:#2499EF; font-weight:500; margin:0;font-size:32px;font-family:'Poppins',sans-serif; text-align:center;"> Easy CRM Invitation
                         <span style="display:block; margin-left:auto; margin-right:auto; margin-top:19px; margin-bottom:30px; border-bottom:1px solid #cecece; width:100px;"></span>
                       </h1>
   
                       <p style="color:#455056; font-size:17px;line-height:24px; margin:0;font-weight:500;">Hi,</p>
                       <br />
                       <p style="color:#455056; font-size:15px;line-height:24px; margin:0;">
-  
-                        Easy CRM is happy to have onboard. You are just one step away from exploring its features.
-  
+ 
+                        You have been invited by your admin to join Easy CRM. 
+                        <br/>
+                          <br/>
+                    
+email: ${email}
+                         <br/>
+password: ${password}
+                        
+  <br/>
                       </p>
                     </td>
                   </tr>
                   <tr>
                     <td style="padding:0 35px;">
-                      <p style="color:#455056; font-size:15px; line-height:24px; margin:0;">
-                        <br>
-                        Please verify your email before login.
-                      </p>
                     </td>
                   </tr>
   
                   <tr>
                     <td style="text-align:center;">
-                      <a href=${link} target="_blank">
-                        <button style="background:#2499EF;text-decoration:none !important; font-weight:500; margin-top:20px; color:#fff;text-transform:uppercase; font-size:14px;padding:6px 16px;display:inline-block;border-radius:4px;text-align:center; border:0px;cursor:pointer">
-                          Verify your email
+                      <a th:href=${link}>
+                        <button style="background:#2499EF;text-decoration:none !important; font-weight:500; margin-top:20px; color:#fff;text-transform:uppercase; font-size:14px;padding:6px 16px;display:inline-block;border-radius:4px;text-align:center; border:0px;cursor:pointer;">
+                         Login
                         </button>
+  
                       </a>
                     </td>
                   </tr>
@@ -82,21 +86,12 @@ const verificationEmailTemplate = (link) =>
                     <td style="text-align:center; padding:0 35px;">
                       <p style="color:#455056; font-size:15px; line-height:24px; margin:0;">
                         <br>
-                        If above button is not working, copy and paste this link on browser:
+                        If above button is not working, copy and paste this link on your browser:
                         <br>
                         ${link}
                       </p>
                     </td>
                   </tr>
-  <!--                 <tr>
-                    <td style="text-align:left; padding:0 35px;">
-                      <p style="color:#455056; font-size:12px; line-height:24px; margin:0;">
-                        <br>
-                        *Link expires in 48hrs
-                        <br>
-                      </p>
-                    </td>
-                  </tr> -->
                   <tr>
                     <td style="padding:0 35px;">
   
@@ -131,4 +126,4 @@ const verificationEmailTemplate = (link) =>
   
   </html>`;
 
-module.exports = verificationEmailTemplate;
+module.exports = resetPwdTemplate;
