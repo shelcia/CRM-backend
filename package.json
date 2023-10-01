@@ -7,15 +7,15 @@
     "bcryptjs": "^2.4.3",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
-    "cryptr": "^6.2.0",
-    "dotenv": "^16.0.3",
+    "cryptr": "^6.3.0",
+    "dotenv": "^16.3.1",
     "express": "^4.18.2",
-    "express-rate-limit": "^6.7.0",
+    "express-rate-limit": "^6.11.2",
     "express-session": "^1.17.3",
-    "joi": "^17.9.2",
+    "joi": "^17.10.2",
     "jsonwebtoken": "^8.5.1",
-    "mongoose": "^6.10.5",
-    "nodemailer": "^6.9.1"
+    "mongoose": "^6.12.0",
+    "nodemailer": "^6.9.5"
   },
   "scripts": {
     "start": "node index.js",
@@ -24,6 +24,6 @@
   "author": "Shelcia",
   "license": "ISC",
   "devDependencies": {
-    "eslint": "^8.39.0"
+    "eslint": "^8.50.0"
   }
 }
