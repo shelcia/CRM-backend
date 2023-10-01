@@ -7,11 +7,9 @@ const contactSchema = new mongoose.Schema({
   },
   mail: {
     type: String,
-    max: 512,
   },
   number: {
     type: String,
-    max: 255,
   },
   company: {
     type: String,
@@ -22,17 +20,29 @@ const contactSchema = new mongoose.Schema({
     max: 255,
   },
   assignee: {
-    type: String,
+    type: Array,
     max: 255,
   },
-  criticalClient: {
-    type: Boolean,
+  priority: {
+    type: String,
+    max: 255,
   },
   companySize: {
     type: Number,
   },
   jobTitle: {
     type: String,
+    max: 255,
+  },
+  expectedRevenue: {
+    type: Number,
+  },
+  expectedClosing: {
+    type: Date,
+  },
+  probability: {
+    type: String,
+    max: 255,
   },
   status: {
     type: String,
@@ -41,6 +51,7 @@ const contactSchema = new mongoose.Schema({
   },
   lastActivity: {
     type: Date,
+    default: Date.now(),
   },
   date: {
     type: Date,

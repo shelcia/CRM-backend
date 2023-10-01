@@ -18,18 +18,31 @@ const userSchema = new mongoose.Schema({
     max: 1024,
     min: 6,
   },
-  type: {
+  role: {
     type: String,
     required: true,
-    max: 20,
+    max: 30,
     min: 2,
+  },
+  token: {
+    type: String,
   },
   permissions: {
     type: Array,
   },
+  verified: {
+    default: false,
+    type: Boolean,
+  },
   date: {
     type: Date,
     default: Date.now(),
+  },
+  companyId: {
+    type: String,
+  },
+  company: {
+    type: String,
   },
 });
 
