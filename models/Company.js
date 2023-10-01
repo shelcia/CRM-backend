@@ -1,9 +1,13 @@
 const mongoose = require("mongoose");
 
 const companySchema = new mongoose.Schema({
-  company: {
+  name: {
     type: String,
     max: 255,
+    required: true,
+  },
+  createdBy: {
+    type: String,
   },
   number: {
     type: String,

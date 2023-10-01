@@ -78,7 +78,7 @@ router.post("/login", async (req, res) => {
     const { error } = await loginSchema.validateAsync(req.body);
     if (error) return res.status(400).send(error.details[0].message);
     else {
-      console.log(user.type);
+      // console.log(user.type);
       if (user.type === "employee") {
         const token = jwt.sign(
           { _id: user._id },

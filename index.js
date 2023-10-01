@@ -4,12 +4,14 @@ const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const rateLimit = require("express-rate-limit");
+const cookieParser = require("cookie-parser");
 const PORT = process.env.PORT || 4050;
 
 //IMPORT ROUTES
 
 const authRoute = require("./routes/auth/auth");
 const contactsRoute = require("./routes/contacts/contacts");
+const usersRoute = require("./routes/user/users");
 const companyRoute = require("./routes/company/company");
 const adminRoute = require("./routes/adminauth/adminauth");
 const managerRoute = require("./routes/managerauth/managerauth");
@@ -39,11 +41,13 @@ app.use(
   })
 );
 app.use(express.json());
+app.use(cookieParser());
 
 //ROUTE MIDDLEWARE
 
 app.use("/api/auth", authRoute);
 app.use("/api/contacts", contactsRoute);
+app.use("/api/users", usersRoute);
 app.use("/api/company", companyRoute);
 app.use("/api/admin", adminRoute);
 app.use("/api/manager", managerRoute);

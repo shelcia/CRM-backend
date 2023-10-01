@@ -13,12 +13,16 @@ const feLink = require("../../link");
 
 //VALIDATION OF USER INPUTS PREREQUISITES
 const Joi = require("joi");
+const Company = require("../../models/Company");
+const { handleError } = require("../../helpers/handleResponses");
 
 const registerSchema = Joi.object({
   name: Joi.string().min(2).required(),
   email: Joi.string().email().required(),
   password: Joi.string().min(6).required(),
   role: Joi.string().min(2).required(),
+  permissions: Joi.array(),
+  cname: Joi.string().required(),
 });
 
 const loginSchema = Joi.object({
@@ -29,85 +33,99 @@ const loginSchema = Joi.object({
 //SIGNUP USER
 router.post("/register", async (req, res) => {
   try {
-    // CHECKING IF USERID ALREADY EXISTS
-    const emailExist = await User.findOne({ email: req.body.email });
-    if (emailExist) {
-      res.status(200).send({
-        status: "400",
-        message: "Email Id already exists",
-      });
-      return;
+    const { cname, email, password, role, type } = req.body;
+
+    // Check if company name already exists
+    const companyExist = await Company.findOne({ name: cname });
+    if (companyExist) {
+      return handleError(res, 400, "Company already exists");
     }
 
-    // HASHING THE PASSWORD
+    // Check if email already exists
+    const emailExist = await User.findOne({ email });
+    if (emailExist) {
+      return handleError(res, 400, "Email Id already exists");
+    }
+
+    // Hash the password
     const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(req.body.password, salt);
+    const hashedPassword = await bcrypt.hash(password, salt);
 
     let permissions = [];
-    if (req.body.role === "admin") {
-      permissions = [...permissions, "all"];
+    if (role === "admin") {
+      permissions = ["all"];
     }
 
-    // CREATE TOKEN
+    // Create token
     const token = jwt.sign(
-      { email: req.body.email, type: req.body.type, permissions: permissions },
+      { email, type, permissions },
       process.env.TOKEN_SECRET
     );
-    //VALIDATION OF USER INPUTS
+
+    // Validate user inputs
     const { error } = await registerSchema.validateAsync(req.body);
     if (error) {
-      res.status(200).send({ message: error });
-      return;
-    } else {
-      //ON PROCESS OF ADDING NEW USER
-      const user = new User({
-        ...req.body,
-        password: hashedPassword,
-        token: token,
-        permissions: permissions,
-      });
-
-      //NEW USER IS ADDED
-      await user.save();
-
-      //GENERATE TOKEN
-      const encryptedString = cryptr.encrypt(req.body.email);
-
-      const link = `${feLink}verification/${encryptedString}`;
-      // console.log(process.env.EMAIL, process.env.PASSWORD);
-
-      const transporter = await nodemailer.createTransport({
-        service: "gmail",
-        auth: {
-          user: process.env.EMAIL_ID,
-          pass: process.env.EMAIL_PWD,
-        },
-      });
-
-      const mailOptions = {
-        from: process.env.EMAIL_ID,
-        to: req.body.email,
-        subject: `Activation mail for Easy CRM`,
-        html: verificationEmailTemplate(link),
-      };
-
-      transporter.sendMail(mailOptions, function (error, info) {
-        if (error) {
-          console.log(error);
-          // res.status(401).send("error");
-          res.status(200).send({ status: "401", message: "Error" });
-        } else {
-          console.log("Email sent: " + info.response);
-          // needs to be changed
-          res.status(200).send({
-            status: "200",
-            message: "User Created Successfully",
-          });
-        }
-      });
+      return handleError(res, 400, error);
     }
+
+    // Create a new user
+    const user = new User({
+      ...req.body,
+      password: hashedPassword,
+      token,
+      permissions,
+    });
+
+    // Create a new company
+    const company = new Company({
+      name: cname,
+      createdBy: user._id,
+    });
+
+    // Save both user and company concurrently
+    await Promise.all([user.save(), company.save()]);
+
+    // Update user with company details
+    const existingUser = await User.findById(user._id).exec();
+    existingUser.set({ company: cname, companyId: company._id });
+    await existingUser.save();
+
+    // Generate verification link
+    const encryptedString = cryptr.encrypt(email);
+    const link = `${feLink}email-verification/${encryptedString}`;
+
+    // Create a transporter for sending emails
+    const transporter = await nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.EMAIL_ID,
+        pass: process.env.EMAIL_PWD,
+      },
+    });
+
+    // Compose email options
+    const mailOptions = {
+      from: process.env.EMAIL_ID,
+      to: email,
+      subject: `Activation mail for Easy CRM`,
+      html: verificationEmailTemplate(link),
+    };
+
+    // Send email
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error(error);
+        return handleError(res, 401, "Mail Error");
+      } else {
+        console.log("Email sent: " + info.response);
+        res.status(200).json({
+          status: "200",
+          message: "User Created Successfully",
+        });
+      }
+    });
   } catch (error) {
-    res.status(200).send({ status: "500", message: error });
+    res.status(500).json({ status: "500", message: "Internal Server Error" });
   }
 });
 
@@ -162,6 +180,7 @@ router.post("/login", async (req, res) => {
             role: user.role,
             token: user.token,
             permissions: user.permissions,
+            companyId: user.companyId,
           },
         });
     }

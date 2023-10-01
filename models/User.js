@@ -26,7 +26,6 @@ const userSchema = new mongoose.Schema({
   },
   token: {
     type: String,
-    required: true,
   },
   permissions: {
     type: Array,
@@ -38,6 +37,9 @@ const userSchema = new mongoose.Schema({
   date: {
     type: Date,
     default: Date.now(),
+  },
+  companyId: {
+    type: String,
   },
   company: {
     type: String,

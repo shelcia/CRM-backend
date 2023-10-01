@@ -1,0 +1,10 @@
+POST http://localhost:4050/api/auth/register 
+Content-Type: application/json
+
+{
+    "name": "test",
+    "email": "test@gmail.com",
+    "password": "password",
+    "permissions": ["users-view", "users-edit", "users-delete"],
+    "role": "admin"
+}
